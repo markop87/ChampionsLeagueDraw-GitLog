@@ -22,6 +22,18 @@
 				<!-- left column -->
 				<h3>Draw</h3>
 				
+				<div class="bowl"><p>Pick a ball!</p>
+				<button name=\"choice\" class=\"draw_ball\"><img src="img/ball_team.png"></button>
+				<button name=\"choice\" class=\"draw_ball\"><img src="img/ball_team.png"></button>
+				<button name=\"choice\" class=\"draw_ball\"><img src="img/ball_team.png"></button>
+				<button name=\"choice\" class=\"draw_ball\"><img src="img/ball_team.png"></button>
+				<button name=\"choice\" class=\"draw_ball\"><img src="img/ball_team.png"></button>
+				<button name=\"choice\" class=\"draw_ball\"><img src="img/ball_team.png"></button>
+				<button name=\"choice\" class=\"draw_ball\"><img src="img/ball_team.png"></button>
+				<button name=\"choice\" class=\"draw_ball\"><img src="img/ball_team.png"></button>
+				</div>
+				
+				<br>
 				<div class="group_container">
 					<table id="group">
 						<tr>

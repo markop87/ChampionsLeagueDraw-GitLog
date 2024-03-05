@@ -105,3 +105,31 @@ h3 { margin: 1%; }
 	background: #1D3F7D; 
 	font-weight: 600; 
 }
+
+.bowl {
+	margin: 0 auto;
+	border: 2px solid #000;
+	border-top: 0;
+	border-bottom-left-radius: 40px 40px;
+	border-bottom-right-radius: 40px 40px;
+	text-align: center;
+	padding: 10px 0px;
+}
+
+.bowl p { margin: 2px 0px 5px 0px; font-weight: 600; }
+
+.bowl img { width: 60px; }
+
+.bowl button
+{
+	border: 0;
+	padding: 0;
+	cursor: grab;
+	background: #fff;
+	padding: 2px;
+}
+
+.bowl button:hover
+{
+	background: #cfe3fe;
+}
