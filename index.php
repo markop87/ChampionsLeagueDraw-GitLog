@@ -21,6 +21,27 @@
 			<div class="col-1">
 				<!-- left column -->
 				<h3>Draw</h3>
+				
+				<div class="group_container">
+					<table id="group">
+						<tr>
+							<th>GROUP 1</th>
+						</tr>
+						<tr>
+							<td>Team A</td>
+						</tr>
+						<tr>
+							<td>Team B</td>
+						</tr>
+						<tr>
+							<td>Team C</td>
+						</tr>
+						<tr>
+							<td>Team D</td>
+						</tr>
+					</table>
+				</div>
+				
 			</div>
 
 			<div class="col-2">

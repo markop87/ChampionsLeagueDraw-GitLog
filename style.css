@@ -50,6 +50,7 @@ footer
 	font-weight: 700;
 	border-top: 5px solid #112649;
 	border-bottom: 5px solid #112649;
+	clear: both;
 }
 
 footer a { color: #fff; } 
@@ -74,3 +75,33 @@ footer a { color: #fff; }
 }
 
 h3 { margin: 1%; }
+
+.group_container
+{
+	display: inline-block; 
+	width: 50%; 
+	float: left; 
+	text-align: center;
+}
+
+#group { 
+	width: 95%; 
+	margin: 0 auto; 
+	border-collapse: collapse; 
+	text-align: center; 
+	margin-bottom: 10%; 
+	border: 1px solid #aaa; 
+}
+
+#group th, td 
+{ 
+	padding: 10px 0px; 
+	border-bottom: 1px solid #aaa;
+}
+
+#group th 
+{ 
+	color: #fff; 
+	background: #1D3F7D; 
+	font-weight: 600; 
+}
