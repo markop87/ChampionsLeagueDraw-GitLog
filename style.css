@@ -108,6 +108,7 @@ h3 { margin: 1%; }
 
 .bowl {
 	margin: 0 auto;
+	margin-bottom: 15px;
 	border: 2px solid #000;
 	border-top: 0;
 	border-bottom-left-radius: 40px 40px;
@@ -125,11 +126,27 @@ h3 { margin: 1%; }
 	border: 0;
 	padding: 0;
 	cursor: grab;
-	background: #fff;
+	background-color: #fff;
 	padding: 2px;
 }
 
 .bowl button:hover
 {
-	background: #cfe3fe;
+	background-color: #cfe3fe;
 }
+
+.reset {
+	  background-color: #9c0909;
+	  border: 1px solid #000;
+	  margin: 0 auto;
+	  padding: 3% 7%;
+	  text-align: center;
+	  text-decoration: none;
+	  display: block;
+	  font-size: 100%;
+	  font-weight: 600;
+	  cursor: pointer;
+	  clear: both;
+}
+
+.reset:hover { background-color: #650909; color: #fff; } 

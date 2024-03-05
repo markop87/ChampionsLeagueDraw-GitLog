@@ -23,17 +23,16 @@
 				<h3>Draw</h3>
 				
 				<div class="bowl"><p>Pick a ball!</p>
-				<button name=\"choice\" class=\"draw_ball\"><img src="img/ball_team.png"></button>
-				<button name=\"choice\" class=\"draw_ball\"><img src="img/ball_team.png"></button>
-				<button name=\"choice\" class=\"draw_ball\"><img src="img/ball_team.png"></button>
-				<button name=\"choice\" class=\"draw_ball\"><img src="img/ball_team.png"></button>
-				<button name=\"choice\" class=\"draw_ball\"><img src="img/ball_team.png"></button>
-				<button name=\"choice\" class=\"draw_ball\"><img src="img/ball_team.png"></button>
-				<button name=\"choice\" class=\"draw_ball\"><img src="img/ball_team.png"></button>
-				<button name=\"choice\" class=\"draw_ball\"><img src="img/ball_team.png"></button>
+				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
+				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
+				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
+				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
+				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
+				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
+				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
+				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
 				</div>
 				
-				<br>
 				<div class="group_container">
 					<table id="group">
 						<tr>
@@ -53,6 +52,26 @@
 						</tr>
 					</table>
 				</div>
+				<div class="group_container">
+					<table id="group">
+						<tr>
+							<th>GROUP 1</th>
+						</tr>
+						<tr>
+							<td>Team A</td>
+						</tr>
+						<tr>
+							<td>Team B</td>
+						</tr>
+						<tr>
+							<td>Team C</td>
+						</tr>
+						<tr>
+							<td>Team D</td>
+						</tr>
+					</table>
+				</div>				
+				<button class="reset" name="reset">RESET</button>
 				
 			</div>
 
