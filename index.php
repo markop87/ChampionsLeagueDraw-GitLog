@@ -35,6 +35,10 @@
 						die("Connection failed: " . $conn->connect_error);
 					}
 						
+					$team_drawn = 0;	
+						
+					$choice = 0;	
+						
 					// counting how many teams were drawn and saving it to 'counter' variable
 					$counter = 0;
 
@@ -46,23 +50,42 @@
 					
 					// calculating the current pot, increasing it every 8 teams drawn
 					$pot = 1 + floor($counter / 8);
-				?>
+					
+					echo "<h3>Draw</h3>";
+					echo "<div class=\"bowl\"><p>Pick a ball!</p>";
+					
+					if($team_drawn == 0)
+					{
+						//form to draw teams
+						echo "<form method=\"post\">";
 
-				<h3>Draw</h3>
-				
-				<div class="bowl"><p>Pick a ball!</p>
-				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
-				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
-				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
-				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
-				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
-				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
-				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
-				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
-				</div>
-				
-				<?php
-				
+						//selecting undrawn teams from given pot in random order
+						$teams = mysqli_query($conn, "SELECT * FROM teams WHERE pot = $pot and groups = 0 ORDER BY rand()");
+						while($t = $teams->fetch_assoc())
+						{						
+							echo "<button name=\"choice\" value=".$t["id"]." class=\"draw_ball\"><img src=\"img/ball_team.png\"></button>";
+						}
+
+						echo "</form>";
+
+						//saving the user's choice
+						if(isset($_POST["choice"])) 
+						{ 
+							$choice = $_POST["choice"];
+						}
+
+						//updating database
+						if($pot == 1 && $choice !=0)
+						{
+							$drawn = "UPDATE teams SET groups = $counter+1 WHERE id = $choice;";
+							$conn->query($drawn);
+							header("Refresh:0");
+						}
+					}
+					
+					echo "</div>";
+
+
 					// displaying a list of undrawn teams from the current pot
 					echo "<table id=\"group\" style=\"width: 50%;\">";
 					echo "<tr><th>Pot $pot</th></tr>";				
