@@ -119,9 +119,21 @@
 						echo "</table>";
 						echo "</div>";
 					}
+					
+					//reset button
+					echo "<form method = \"post\">";
+					echo "<button class=\"reset\" name=\"reset\">RESET</button>";
+					echo "</form>";
+	
+					if(isset($_POST["reset"])) 
+					{ 
+						$reset = "UPDATE teams SET groups = 0";
+						$conn->query($reset);
+						header("Location: index.php");
+					}
 				?>
 				
-				<button class="reset" name="reset">RESET</button>
+				
 				
 			</div>
 
