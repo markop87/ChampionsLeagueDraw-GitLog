@@ -35,7 +35,12 @@
 						die("Connection failed: " . $conn->connect_error);
 					}
 						
-					$team_drawn = 0;	
+					$team_drawn = 0;
+
+					if(isset($_GET['team'])) 
+					{
+						$team_drawn = $_GET['team'];
+					}
 						
 					$choice = 0;	
 						
@@ -63,7 +68,7 @@
 						$teams = mysqli_query($conn, "SELECT * FROM teams WHERE pot = $pot and groups = 0 ORDER BY rand()");
 						while($t = $teams->fetch_assoc())
 						{						
-							echo "<button name=\"choice\" value=".$t["id"]." class=\"draw_ball\"><img src=\"img/ball_team.png\"></button>";
+							echo "<button name=\"choice\" value=".$t["id"]."><img src=\"img/ball_team.png\"></button>";
 						}
 
 						echo "</form>";
@@ -74,12 +79,46 @@
 							$choice = $_POST["choice"];
 						}
 
-						//updating database
+						//updating database in pot 1 or going to draw group in pot 2, 3 and 4
 						if($pot == 1 && $choice !=0)
 						{
 							$drawn = "UPDATE teams SET groups = $counter+1 WHERE id = $choice;";
 							$conn->query($drawn);
 							header("Refresh:0");
+						}
+						else if($pot != 1 && $choice != 0)
+						{
+							header("Location: index.php?team=$choice");
+						}
+					}
+					else
+					{
+						include 'possibilities.php'; //file with CheckPossibilities function
+
+						$possibilities = CheckPossibilities($conn, $team_drawn);
+						
+						//shuffling array with possible groups
+						shuffle($possibilities);
+								
+						echo "<form method = \"post\">";
+						
+						//displaying draw balls
+						for($i = 0; $i < sizeof($possibilities); $i++)
+						{
+							echo "<button name=\"choice\" value=$possibilities[$i]><img src=\"img/ball_group.png\"></button>";
+						}
+						
+						echo "</form>";
+						
+						//saving user's choice
+						if(isset($_POST["choice"])) { $choice = $_POST["choice"]; }
+						
+						//updating database 
+						if($choice != 0)
+						{
+							$drawn = "UPDATE teams SET groups = $choice WHERE id = $team_drawn";
+							$conn->query($drawn);
+							header("Location: index.php");
 						}
 					}
 					
