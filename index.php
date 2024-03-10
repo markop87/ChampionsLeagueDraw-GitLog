@@ -20,58 +20,159 @@
 			
 			<div class="col-1">
 				<!-- left column -->
-				<h3>Draw</h3>
 				
-				<div class="bowl"><p>Pick a ball!</p>
-				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
-				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
-				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
-				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
-				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
-				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
-				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
-				<button name="choice" class="draw_ball"><img src="img/ball_team.png"></button>
-				</div>
+				<?php
+					//opening a connection to MySQL database
+					$user = "root";
+					$pass = "";
+					$host = "127.0.0.1";
+					$dbname = "ucl_draw";
+					
+					$conn = new mysqli($host, $user, $pass, $dbname);
+					
+					if ($conn->connect_error) 
+					{	
+						die("Connection failed: " . $conn->connect_error);
+					}
+						
+					$team_drawn = 0;
+
+					if(isset($_GET['team'])) 
+					{
+						$team_drawn = $_GET['team'];
+					}
+						
+					$choice = 0;	
+						
+					// counting how many teams were drawn and saving it to 'counter' variable
+					$counter = 0;
+
+					$drawn = mysqli_query($conn, "SELECT COUNT(name) AS drawn FROM teams WHERE groups != 0");
+					while($c = $drawn->fetch_assoc()) 
+					{ 
+						$counter = $c["drawn"]; 
+					}
+					
+					// calculating the current pot, increasing it every 8 teams drawn
+					$pot = 1 + floor($counter / 8);
+					
+					echo "<h3>Draw</h3>";
+					echo "<div class=\"bowl\"><p>Pick a ball!</p>";
+					
+					if($team_drawn == 0)
+					{
+						//form to draw teams
+						echo "<form method=\"post\">";
+
+						//selecting undrawn teams from given pot in random order
+						$teams = mysqli_query($conn, "SELECT * FROM teams WHERE pot = $pot and groups = 0 ORDER BY rand()");
+						while($t = $teams->fetch_assoc())
+						{						
+							echo "<button name=\"choice\" value=".$t["id"]."><img src=\"img/ball_team.png\"></button>";
+						}
+
+						echo "</form>";
+
+						//saving the user's choice
+						if(isset($_POST["choice"])) 
+						{ 
+							$choice = $_POST["choice"];
+						}
+
+						//updating database in pot 1 or going to draw group in pot 2, 3 and 4
+						if($pot == 1 && $choice !=0)
+						{
+							$drawn = "UPDATE teams SET groups = $counter+1 WHERE id = $choice;";
+							$conn->query($drawn);
+							header("Refresh:0");
+						}
+						else if($pot != 1 && $choice != 0)
+						{
+							header("Location: index.php?team=$choice");
+						}
+					}
+					else
+					{
+						include 'possibilities.php'; //file with CheckPossibilities function
+
+						$possibilities = CheckPossibilities($conn, $team_drawn);
+						
+						//shuffling array with possible groups
+						shuffle($possibilities);
+								
+						echo "<form method = \"post\">";
+						
+						//displaying draw balls
+						for($i = 0; $i < sizeof($possibilities); $i++)
+						{
+							echo "<button name=\"choice\" value=$possibilities[$i]><img src=\"img/ball_group.png\"></button>";
+						}
+						
+						echo "</form>";
+						
+						//saving user's choice
+						if(isset($_POST["choice"])) { $choice = $_POST["choice"]; }
+						
+						//updating database 
+						if($choice != 0)
+						{
+							$drawn = "UPDATE teams SET groups = $choice WHERE id = $team_drawn";
+							$conn->query($drawn);
+							header("Location: index.php");
+						}
+					}
+					
+					echo "</div>";
+
+
+					// displaying a list of undrawn teams from the current pot
+					echo "<table id=\"group\" style=\"width: 50%;\">";
+					echo "<tr><th>Pot $pot</th></tr>";				
+					
+					$pot_teams = mysqli_query($conn, "SELECT t.name, t.country_id, c.id, c.short country FROM teams t, country c 
+					WHERE c.id = t.country_id AND pot = $pot AND groups = 0 ORDER BY t.name");
+					while($pt = $pot_teams->fetch_assoc())
+					{
+						echo "<tr><td>".$pt['name']." (".$pt['country'].")</td></tr>";				
+					}
+					echo "</table>";
+					
+					// displaying 8 groups
+					for($i = 1; $i < 9; $i++)
+					{	
+						echo "<div class=\"group_container\">";
+						echo "<table id=\"group\">";
+						echo "<tr><th>GROUP $i</th></tr>";
+						
+						$groups = mysqli_query($conn, "SELECT t.*, c.short code FROM teams t, country c WHERE t.groups = $i AND c.id = t.country_id ORDER BY t.pot");
+						while($g = $groups->fetch_assoc())
+						{
+							echo "<tr><td>".$g["name"]." (".$g['code'].")</td></tr>";
+						}
+						// adding empty rows if group contains less than 4 teams
+						for($r = $groups->num_rows; $r < 4; $r++)
+						{
+							echo "<tr><td>-</td></tr>";	
+						}
+						
+						echo "</table>";
+						echo "</div>";
+					}
+					
+					//reset button
+					echo "<form method = \"post\">";
+					echo "<button class=\"reset\" name=\"reset\">RESET</button>";
+					echo "</form>";
+	
+					if(isset($_POST["reset"])) 
+					{ 
+						$reset = "UPDATE teams SET groups = 0";
+						$conn->query($reset);
+						header("Location: index.php");
+					}
+				?>
 				
-				<div class="group_container">
-					<table id="group">
-						<tr>
-							<th>GROUP 1</th>
-						</tr>
-						<tr>
-							<td>Team A</td>
-						</tr>
-						<tr>
-							<td>Team B</td>
-						</tr>
-						<tr>
-							<td>Team C</td>
-						</tr>
-						<tr>
-							<td>Team D</td>
-						</tr>
-					</table>
-				</div>
-				<div class="group_container">
-					<table id="group">
-						<tr>
-							<th>GROUP 1</th>
-						</tr>
-						<tr>
-							<td>Team A</td>
-						</tr>
-						<tr>
-							<td>Team B</td>
-						</tr>
-						<tr>
-							<td>Team C</td>
-						</tr>
-						<tr>
-							<td>Team D</td>
-						</tr>
-					</table>
-				</div>				
-				<button class="reset" name="reset">RESET</button>
+				
 				
 			</div>
 
