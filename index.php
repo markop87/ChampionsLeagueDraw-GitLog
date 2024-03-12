@@ -56,8 +56,28 @@
 					// calculating the current pot, increasing it every 8 teams drawn
 					$pot = 1 + floor($counter / 8);
 					
+					// counting how many groups left during draw in current pot
+					// groupA -> groups 1-4, group B -> groups 5-8
+					$groupA = 4; $groupB = 4; 
+					
+					// counting possibilities in groups 1 - 4 and in groups 5 - 8
+					$possibilitiesA = 0; $possibilitiesB = 0;
+					
+					// calculating how many available groups are left in halves 1-4 and 5-8
+					$check_teams = mysqli_query($conn, "SELECT * FROM teams WHERE pot = $pot AND groups != 0");
+					while($ct = $check_teams->fetch_assoc()) 
+					{
+						if($ct['groups'] < 5) { $groupA--; }
+						else if($ct['groups'] > 4) { $groupB--; }
+					}
+					
 					echo "<h3>Draw</h3>";
+
+					if($pot < 5)
+					{
 					echo "<div class=\"bowl\"><p>Pick a ball!</p>";
+					}
+					else echo "<div class=\"bowl\"><h2>Draw concluded.</h2>";
 					
 					if($team_drawn == 0)
 					{
@@ -97,6 +117,68 @@
 
 						$possibilities = CheckPossibilities($conn, $team_drawn);
 						
+						// An array to count how many teams can be placed in a given group
+						$occurrences = array(0, 0, 0, 0, 0, 0, 0, 0);
+						
+						$check_rivals = mysqli_query($conn, "SELECT * FROM teams WHERE pot = $pot AND groups = 0 AND id != $team_drawn");
+						while($cr = $check_rivals ->fetch_assoc())
+						{
+							// checking possibilities of every undrawn teams
+							$check = CheckPossibilities($conn, $cr['id']);
+							
+							// saving team possibilities to occurrences array
+							for($i = 0; $i < 8; $i++)
+							{
+								if(array_key_exists($i, $check)) { $occurrences[$i]++; }
+							}
+
+							// counting how many teams can be placed in groups 1-4 and groups 5-8
+							if(max($check) < 5) { $possibilitiesA++; }
+							else if(min($check) > 4) { $possibilitiesB++; }
+
+							// If the number of teams that can be placed in a given half of the 
+							// groups is equal to the available places in that half of the groups, 
+							// the drawn team will not be able to be placed there.
+							if(($possibilitiesA == $groupA && $possibilitiesB != 0) || ($possibilitiesA == $groupA && max($possibilities) > 4))
+							{
+								$possibilities = array_diff($possibilities, [1, 2, 3, 4]);
+							}
+							else if(($possibilitiesB == $groupB && $possibilitiesA != 0) || ($possibilitiesB == $groupB && min($possibilities) < 5))
+							{
+								$possibilities = array_diff($possibilities, [5, 6, 7, 8]);				
+							}
+							
+							// if one of the remaining teams has one option
+							// the team drawn cannot be placed in that group
+							if(sizeof($check) == 1)
+							{
+								$possibilities = array_diff($possibilities, [reset($check)]);							
+							}
+						}
+						
+						// adding drawn team possibilities to occurrences array
+						for($i = 0; $i < 8; $i++)
+						{
+							if(array_key_exists($i, $possibilities)) { $occurrences[$i]++; }
+						}
+						
+						// counting how many teams can be placed in given group
+						$group_counter = array_count_values($occurrences);
+						
+						// if one of the groups is an option for only one team 
+						// and it is a drawn team, this will be their only option
+						if (array_key_exists(1, $group_counter)) 
+						{
+							if($group_counter[1] == 1)
+							{
+								$key = array_search('1', $occurrences);	
+								if (array_key_exists($key, $possibilities)) 
+								{
+									$possibilities = array($key => $key+1);
+								}
+							}
+						}	
+						
 						//shuffling array with possible groups
 						shuffle($possibilities);
 								
@@ -119,23 +201,32 @@
 							$drawn = "UPDATE teams SET groups = $choice WHERE id = $team_drawn";
 							$conn->query($drawn);
 							header("Location: index.php");
+
 						}
 					}
 					
 					echo "</div>";
 
-
 					// displaying a list of undrawn teams from the current pot
-					echo "<table id=\"group\" style=\"width: 50%;\">";
-					echo "<tr><th>Pot $pot</th></tr>";				
-					
-					$pot_teams = mysqli_query($conn, "SELECT t.name, t.country_id, c.id, c.short country FROM teams t, country c 
-					WHERE c.id = t.country_id AND pot = $pot AND groups = 0 ORDER BY t.name");
-					while($pt = $pot_teams->fetch_assoc())
+					if($pot < 5)
 					{
-						echo "<tr><td>".$pt['name']." (".$pt['country'].")</td></tr>";				
+						echo "<table id=\"group\" style=\"width: 50%;\">";
+						echo "<tr><th>Pot $pot</th></tr>";				
+						
+						$pot_teams = mysqli_query($conn, "SELECT t.name, t.country_id, t.id tid, c.id, c.short country FROM teams t, country c 
+						WHERE c.id = t.country_id AND pot = $pot AND groups = 0 ORDER BY t.name");
+						while($pt = $pot_teams->fetch_assoc())
+						{
+							if($pt['tid'] == $team_drawn)
+							{
+								echo "<tr style='background-color: #75d0f3;'>";
+							}
+							else echo "<tr>";
+							
+							echo "<td>".$pt['name']." (".$pt['country'].")</td></tr>";				
+						}
+						echo "</table>";
 					}
-					echo "</table>";
 					
 					// displaying 8 groups
 					for($i = 1; $i < 9; $i++)
@@ -171,8 +262,6 @@
 						header("Location: index.php");
 					}
 				?>
-				
-				
 				
 			</div>
 
