@@ -187,7 +187,7 @@
 						//displaying draw balls
 						for($i = 0; $i < sizeof($possibilities); $i++)
 						{
-							echo "<button name=\"choice\" value=$possibilities[$i]><img src=\"img/ball_group.png\"></button>";
+							echo "<button name=\"choice\" value=\"$possibilities[$i]\" onclick=\"showGroup($possibilities[$i])\"><img src=\"img/ball_group.png\"></button>";
 						}
 						
 						echo "</form>";
@@ -210,7 +210,7 @@
 					// displaying a list of undrawn teams from the current pot
 					if($pot < 5)
 					{
-						echo "<table id=\"group\" style=\"width: 50%;\">";
+						echo "<table id=\"group\" style=\"width: 50%; margin-bottom: 0;\">";
 						echo "<tr><th>Pot $pot</th></tr>";				
 						
 						$pot_teams = mysqli_query($conn, "SELECT t.name, t.country_id, t.id tid, c.id, c.short country FROM teams t, country c 
@@ -227,6 +227,9 @@
 						}
 						echo "</table>";
 					}
+					
+					echo "<p id=\"drawn\"></p>";
+					if($team_drawn != 0 && $choice != 0) { sleep(1); }
 					
 					// displaying 8 groups
 					for($i = 1; $i < 9; $i++)
@@ -292,5 +295,11 @@
 			</footer>
 		
 		</div>
+		<script>
+			function showGroup(x) 
+			{
+				document.getElementById("drawn").innerHTML = "Goes to group "+x;
+			}
+		</script>
 	</body>
 </html>

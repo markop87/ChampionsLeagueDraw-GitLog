@@ -87,10 +87,10 @@ h3 { margin: 1%; }
 #group { 
 	width: 95%; 
 	margin: 0 auto; 
+	margin-bottom: 10%;
 	border-collapse: collapse; 
-	text-align: center; 
-	margin-bottom: 10%; 
-	border: 1px solid #aaa; 
+	text-align: center;
+	border: 1px solid #aaa;
 }
 
 #group th, td 
@@ -150,3 +150,11 @@ h3 { margin: 1%; }
 }
 
 .reset:hover { background-color: #650909; color: #fff; } 
+
+#drawn 
+{
+	text-align: center;
+	font-size: 110%;
+	font-weight: 600;
+	color: #9c0909;
+}
