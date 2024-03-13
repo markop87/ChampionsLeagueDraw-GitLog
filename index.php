@@ -42,7 +42,8 @@
 						$team_drawn = $_GET['team'];
 					}
 						
-					$choice = 0;	
+					$choice = 0;
+					$possibilities = array();
 						
 					// counting how many teams were drawn and saving it to 'counter' variable
 					$counter = 0;
@@ -177,8 +178,8 @@
 									$possibilities = array($key => $key+1);
 								}
 							}
-						}	
-						
+						}
+								
 						//shuffling array with possible groups
 						shuffle($possibilities);
 								
@@ -206,7 +207,21 @@
 					}
 					
 					echo "</div>";
-
+					
+					// displaying available groups to draw for
+					// teams drawn in pots 2, 3, 4.
+					if($team_drawn != 0 && $pot > 1)
+					{
+						sort($possibilities);
+						echo "<p style='text-align: center;'>Possible groups: ";
+								
+						foreach ($possibilities as $value) 
+						{
+							echo "<span class=\"available\">".$value."</span>";
+						}
+						echo "</p>";
+					}
+					
 					// displaying a list of undrawn teams from the current pot
 					if($pot < 5)
 					{
@@ -228,6 +243,7 @@
 						echo "</table>";
 					}
 					
+					//displaying drawn group
 					echo "<p id=\"drawn\"></p>";
 					if($team_drawn != 0 && $choice != 0) { sleep(1); }
 					
@@ -295,6 +311,10 @@
 			</footer>
 		
 		</div>
+		<!-- 
+			A javascript function that retrieves the number of drawn group 
+			and displays to the user which group the team will be placed in   
+		-->
 		<script>
 			function showGroup(x) 
 			{

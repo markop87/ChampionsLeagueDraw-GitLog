@@ -158,3 +158,11 @@ h3 { margin: 1%; }
 	font-weight: 600;
 	color: #9c0909;
 }
+
+.available
+{
+	padding: 2px 7px; 
+	background:#75D0F3; 
+	margin: 0 2px; 
+	border-radius: 6px;	
+}
